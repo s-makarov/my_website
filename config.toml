@@ -175,14 +175,16 @@ disqusShortname = ""
     email = "smakarov.mfa2021@london.edu"
 
     [[params.contact.phone]]
-    title = "Phone"
-    phone = "(000) 000-0000 x1234"
+    title = "Mobile Phone"
+    phone = "07818 280395"
 
     [[params.contact.address]]
     title = "Address"
+    url= "https://www.google.com/maps/place/London+Business+School/@51.5263466,-0.1582751,16.42z/data=!4m5!3m4!1s0x48761ac6309dd51b:0xbf9c52f1c02b7723!8m2!3d51.5261551!4d-0.160667"
     street = "Regent's Park"
     city = "London, NW1 4SA"
     country = "United Kingdom"
+    
 
   # Footer section
   [params.footer]
@@ -207,12 +209,12 @@ disqusShortname = ""
     
     [[params.footer.social]]
       icon = "fa-github"
-      url= "https://www.github.com"
+      url= "https://github.com/s-makarov"
       label = "GitHub"
 
     [[params.footer.social]]
       icon = "fa-linkedin"
-      url= "https://www.linkedin.com/stanislav-makarov/"
+      url= "https://www.linkedin.com/in/stanislav-makarov/"
       label = "LinkedIn"
 
     [[params.footer.quicklinks]]

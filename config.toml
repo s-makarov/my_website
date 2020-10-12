@@ -95,11 +95,11 @@ disqusShortname = ""
       title = "Project 1"
       subtitle = "Getting used to R"
       image = "pic01.jpg"
-      url = "projects/session2-workshop1/homework1_final.Rmd"
+      url = "projects/session2-workshop1/Intro"
 
     [[params.tiles.showcase]]
-      title = "Second Project"
-      subtitle = "Feugiat Amet Tempus"
+      title = "Project 2"
+      subtitle = "R strikes back"
       image = "pic02.jpg"
       url = "blogs/tempus"
 

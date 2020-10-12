@@ -7,7 +7,7 @@ description: First Homework
 draft: false
 image: pic01.jpg
 keywords: ""
-slug: project1
+slug: homework1
 title: First steps
 ---
 

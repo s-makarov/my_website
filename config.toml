@@ -101,7 +101,7 @@ disqusShortname = ""
       title = "Project 2"
       subtitle = "R strikes back"
       image = "pic02.jpg"
-      url = "blogs/tempus"
+      url = "projects/project_2"
 
     [[params.tiles.showcase]]
       title = "Magna"
@@ -179,7 +179,6 @@ disqusShortname = ""
     phone = "07818 280395"
 
     [[params.contact.address]]
-    url= "https://www.google.com/maps/place/London+Business+School/@51.5263466,-0.1582751,16.42z/data=!4m5!3m4!1s0x48761ac6309dd51b:0xbf9c52f1c02b7723!8m2!3d51.5261551!4d-0.160667"
     title = "Address"
     street = "Regent's Park"
     city = "London, NW1 4SA"

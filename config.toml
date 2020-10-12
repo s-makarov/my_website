@@ -93,9 +93,9 @@ disqusShortname = ""
     
     [[params.tiles.showcase]]
       title = "Project 1"
-      subtitle = "Getting used to R"
+      subtitle = "First Steps"
       image = "pic01.jpg"
-      url = "projects/session2-workshop1/Intro"
+      url = "projects/project_1"
 
     [[params.tiles.showcase]]
       title = "Project 2"
@@ -204,7 +204,7 @@ disqusShortname = ""
 
     [[params.footer.social]]
       icon = "fa-instagram"
-      url= "https://www.instagram.com"
+      url= "https://www.instagram.com/makstaa/"
       label = "Instagram"
     
     [[params.footer.social]]

@@ -95,13 +95,13 @@ disqusShortname = ""
       title = "Project 1"
       subtitle = "First Steps"
       image = "pic01.jpg"
-      url = "post/2015-07-23-r-rmarkdown"
+      url = "blogs/project1"
 
     [[params.tiles.showcase]]
       title = "Project 2"
       subtitle = "R strikes back"
       image = "pic02.jpg"
-      url = "projects/project1"
+      url = "post/2015-07-23-r-rmarkdown"
 
     [[params.tiles.showcase]]
       title = "Magna"

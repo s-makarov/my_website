@@ -95,7 +95,7 @@ disqusShortname = ""
       title = "Project 1"
       subtitle = "First Steps"
       image = "pic01.jpg"
-      url = "projects/project_1"
+      url = "post/2015-07-23-r-rmarkdown"
 
     [[params.tiles.showcase]]
       title = "Project 2"

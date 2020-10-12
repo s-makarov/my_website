@@ -95,7 +95,7 @@ disqusShortname = ""
       title = "Project 1"
       subtitle = "Getting used to R"
       image = "pic01.jpg"
-      url = "projects/homework1_final"
+      url = "projects/homework1_final.Rmd"
 
     [[params.tiles.showcase]]
       title = "Second Project"

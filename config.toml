@@ -37,8 +37,8 @@ disqusShortname = ""
 
   # Navigation Section
   [params.navigation]
-    title = "Stanislav"
-    subtitle = "By HTML5 Up"
+    title = "SM99"
+    subtitle = ""
     menu = "Menu"
     # Optional logo as brand stored in img/
     # logo = "logo.png"
@@ -82,7 +82,7 @@ disqusShortname = ""
     # To change the background image on the homepage banner, replace 'banner.jpg' in
     # the 'static/img' folder.
     title = "Hi, my name is Stanislav"
-    subtitle = "A RESPONSIVE SITE TEMPLATE DESIGNED BY HTML5 UP\nAND RELEASED UNDER THE CREATIVE COMMONS."
+    subtitle = "I am an aspiring finance professional"
     buttonText = "Get Started"
 
 

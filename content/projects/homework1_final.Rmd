@@ -2,12 +2,12 @@
 categories:
 - ""
 - ""
-date: "2017-10-31T21:28:43-05:00"
-description: "First Homework"
+date: "2017-10-31"
+description: First Homework
 draft: false
 image: pic01.jpg
 keywords: ""
-slug: project_1
+slug: project1
 title: First steps
 ---
 

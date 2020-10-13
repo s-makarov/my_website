@@ -1,0 +1,148 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31"
+description: First Homework
+draft: false
+image: pic01.jpg
+keywords: ""
+slug: homework1
+title: First steps
+---
+
+
+
+```{r, setup, echo=FALSE}
+
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+
+```{r load-libraries, warning=FALSE, message=FALSE, echo=FALSE}
+
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(fivethirtyeight)
+library(here)
+library(skimr)
+library(janitor)
+library(vroom)
+library(tidyquant)
+library(rvest)    # scrape websites
+library(purrr)  
+library(lubridate) #to handle dates
+library(ggthemes)
+library(ggrepel)
+library(ggpubr)
+library(ggplot2)
+library(scales)
+library(tidytext)
+library(patchwork)
+
+```
+
+
+
+# Where Do People Drink The Most Beer, Wine And Spirits?
+
+Back in 2014, [fivethiryeight.com](https://fivethirtyeight.com/features/dear-mona-followup-where-do-people-drink-the-most-beer-wine-and-spirits/) published an article on alchohol consumption in different countries. The data `drinks` is available as part of the `fivethirtyeight` package. To get the data we install the `fivethirtyeight` package and upload the data.
+
+```{r, load_alcohol_data}
+
+library(fivethirtyeight)
+data(drinks)
+
+```
+
+What are the variable types? Any missing values we should worry about?
+
+We use `skim()` function to look through the main characteristics of the data set and find whether there are any NAs and what are the variable types:
+
+```{r glimpse_skim_data}
+
+skim(drinks)
+
+```
+
+We can see that there are only 5 variables, out of which 4 are numeric and 1 is character type. Also the *n_missing* is 0 for all variables, so there are no missing values (NAs) to worry about.
+
+Now, as we skinned the data set, we can proceed to visualization of countries arranged by number of servings. We have three main categories of drinks: beer, wine and spirits. Let's visualize them one by one:
+
+## Beer:
+```{r beer_plot}
+
+# get the top 25 countries
+beer <- drinks %>% 
+  arrange(desc(beer_servings)) %>% 
+  head(25)
+
+# create the plot of the top-25 countries using ggplot2
+ggplot(beer, aes(y = reorder(country, beer_servings), x = beer_servings)) +
+  geom_col() +
+  labs(y = "",
+       x = "Servings of Beer",
+       title = "Beer Servings across Countries",
+       caption = "source: fivethirtyeight") +
+  theme_minimal()
+  
+
+```
+
+## Wine:
+```{r wine_plot}
+
+# get the top 25 countries
+wine <- drinks %>% 
+  arrange(desc(wine_servings)) %>% 
+  head(25)
+
+# create the plot of the top-25 countries using ggplot2
+ggplot(wine, aes(y = reorder(country, wine_servings), x = wine_servings)) +
+  geom_col() +
+  labs(y = "",
+       x = "Servings of Wine",
+       title = "Wine Servings across Countries",
+       caption = "source: fivethirtyeight") +
+  theme_minimal()
+
+```
+
+## Spirits:
+```{r spirit_plot}
+
+# get the top 25 countries
+spirits <- drinks %>% 
+  arrange(desc(spirit_servings)) %>% 
+  head(25)
+
+# create the plot of the top-25 countries using ggplot2
+ggplot(spirits, aes(y = reorder(country, spirit_servings), x = spirit_servings)) +
+  geom_col() +
+  labs(y = "",
+       x = "Servings of Spirits",
+       title = "Spirits Servings across Countries",
+       caption = "source: fivethirtyeight") +
+  theme_minimal()
+
+```
+
+> Essay:
+
+The trends for three types of alcohol consumption are similar in the amount distribution while different in the list countries. All top 25 Beer countries have more than 200 servings consumed, while the average for the top 25 Beer and Wine countries are also close to 200 servings. Grenada, the highest spirits-consuming country, has a consumption greater than the highest of Beer (Namibia) and Wine (France). The high consumption of beer by Namibia may relate to its colonial history by German. 
+
+From a geographical perspective, spirits' major consumption is in developing countries, likely due to spirits' high alcohol content per volume. Two major country groups are ex-soviet countries, which consume Vodka and Caribbean countries, which drink Rum. A detailed look at the types of spirits may reveal differences in country appetites. On the contrary, developed European countries consumed most wine. These countries are both major producers and consumers for wines. Consumption for beer spread across different continent and economic levels, indicating beer as a widely accepted alcohol in the world.

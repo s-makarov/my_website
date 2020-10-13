@@ -1,0 +1,343 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="Aspiring Finance Professional">
+	<meta name="author" content="Stanislav Makarov">
+	<meta name="generator" content="Hugo 0.75.1" />
+	<title>First steps &middot; Stanislav&#39;s Portfolio</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>SM99</strong> <span></span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/blogs">Blogs</a></li>
+            
+                <li><a href="/blogs/ipsum">Generic Blog</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+                <li><a href="/blogs" class="button special fit">Get Started</a></li>
+            
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>First steps</h1>
+                            </header>
+                            
+                                <span class="image main"><img src="/img/projects/pic01.jpg" alt="" /></span>
+                            
+                            
+
+
+<div id="where-do-people-drink-the-most-beer-wine-and-spirits" class="section level1">
+<h1>Where Do People Drink The Most Beer, Wine And Spirits?</h1>
+<p>Back in 2014, <a href="https://fivethirtyeight.com/features/dear-mona-followup-where-do-people-drink-the-most-beer-wine-and-spirits/">fivethiryeight.com</a> published an article on alchohol consumption in different countries. The data <code>drinks</code> is available as part of the <code>fivethirtyeight</code> package. To get the data we install the <code>fivethirtyeight</code> package and upload the data.</p>
+<pre class="r"><code>library(fivethirtyeight)
+data(drinks)</code></pre>
+<p>What are the variable types? Any missing values we should worry about?</p>
+<p>We use <code>skim()</code> function to look through the main characteristics of the data set and find whether there are any NAs and what are the variable types:</p>
+<pre class="r"><code>skim(drinks)</code></pre>
+<table>
+<caption>(#tab:glimpse_skim_data)Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">drinks</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">193</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">5</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">4</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">country</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">28</td>
+<td align="right">0</td>
+<td align="right">193</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">beer_servings</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">106.16</td>
+<td align="right">101.14</td>
+<td align="right">0</td>
+<td align="right">20.0</td>
+<td align="right">76.0</td>
+<td align="right">188.0</td>
+<td align="right">376.0</td>
+<td align="left">▇▃▂▂▁</td>
+</tr>
+<tr class="even">
+<td align="left">spirit_servings</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">80.99</td>
+<td align="right">88.28</td>
+<td align="right">0</td>
+<td align="right">4.0</td>
+<td align="right">56.0</td>
+<td align="right">128.0</td>
+<td align="right">438.0</td>
+<td align="left">▇▃▂▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">wine_servings</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">49.45</td>
+<td align="right">79.70</td>
+<td align="right">0</td>
+<td align="right">1.0</td>
+<td align="right">8.0</td>
+<td align="right">59.0</td>
+<td align="right">370.0</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">total_litres_of_pure_alcohol</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">4.72</td>
+<td align="right">3.77</td>
+<td align="right">0</td>
+<td align="right">1.3</td>
+<td align="right">4.2</td>
+<td align="right">7.2</td>
+<td align="right">14.4</td>
+<td align="left">▇▃▅▃▁</td>
+</tr>
+</tbody>
+</table>
+<p>We can see that there are only 5 variables, out of which 4 are numeric and 1 is character type. Also the <em>n_missing</em> is 0 for all variables, so there are no missing values (NAs) to worry about.</p>
+<p>Now, as we skinned the data set, we can proceed to visualization of countries arranged by number of servings. We have three main categories of drinks: beer, wine and spirits. Let’s visualize them one by one:</p>
+<div id="beer" class="section level2">
+<h2>Beer:</h2>
+<pre class="r"><code># get the top 25 countries
+beer &lt;- drinks %&gt;% 
+  arrange(desc(beer_servings)) %&gt;% 
+  head(25)
+
+# create the plot of the top-25 countries using ggplot2
+ggplot(beer, aes(y = reorder(country, beer_servings), x = beer_servings)) +
+  geom_col() +
+  labs(y = &quot;&quot;,
+       x = &quot;Servings of Beer&quot;,
+       title = &quot;Beer Servings across Countries&quot;,
+       caption = &quot;source: fivethirtyeight&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="/projects/homework1_files/figure-html/beer_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+<div id="wine" class="section level2">
+<h2>Wine:</h2>
+<pre class="r"><code># get the top 25 countries
+wine &lt;- drinks %&gt;% 
+  arrange(desc(wine_servings)) %&gt;% 
+  head(25)
+
+# create the plot of the top-25 countries using ggplot2
+ggplot(wine, aes(y = reorder(country, wine_servings), x = wine_servings)) +
+  geom_col() +
+  labs(y = &quot;&quot;,
+       x = &quot;Servings of Wine&quot;,
+       title = &quot;Wine Servings across Countries&quot;,
+       caption = &quot;source: fivethirtyeight&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="/projects/homework1_files/figure-html/wine_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+<div id="spirits" class="section level2">
+<h2>Spirits:</h2>
+<pre class="r"><code># get the top 25 countries
+spirits &lt;- drinks %&gt;% 
+  arrange(desc(spirit_servings)) %&gt;% 
+  head(25)
+
+# create the plot of the top-25 countries using ggplot2
+ggplot(spirits, aes(y = reorder(country, spirit_servings), x = spirit_servings)) +
+  geom_col() +
+  labs(y = &quot;&quot;,
+       x = &quot;Servings of Spirits&quot;,
+       title = &quot;Spirits Servings across Countries&quot;,
+       caption = &quot;source: fivethirtyeight&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="/projects/homework1_files/figure-html/spirit_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+<blockquote>
+<p>Essay:</p>
+</blockquote>
+<p>The trends for three types of alcohol consumption are similar in the amount distribution while different in the list countries. All top 25 Beer countries have more than 200 servings consumed, while the average for the top 25 Beer and Wine countries are also close to 200 servings. Grenada, the highest spirits-consuming country, has a consumption greater than the highest of Beer (Namibia) and Wine (France). The high consumption of beer by Namibia may relate to its colonial history by German.</p>
+<p>From a geographical perspective, spirits’ major consumption is in developing countries, likely due to spirits’ high alcohol content per volume. Two major country groups are ex-soviet countries, which consume Vodka and Caribbean countries, which drink Rum. A detailed look at the types of spirits may reveal differences in country appetites. On the contrary, developed European countries consumed most wine. These countries are both major producers and consumers for wines. Consumption for beer spread across different continent and economic levels, indicating beer as a widely accepted alcohol in the world.</p>
+</div>
+</div>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="https://www.instagram.com/makstaa/" class="icon alt fa-instagram" target="_blank"><span class="label">Instagram</span></a></li>
+                
+                    <li><a href="https://github.com/s-makarov" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/in/stanislav-makarov/" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; Stanislav Makarov</li>
+                
+                <li>Design:  <a href="https://www.html5up.net">HTML5 UP</a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>

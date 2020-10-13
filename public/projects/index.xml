@@ -14,8 +14,7 @@
       
       <guid>/projects/homework1/</guid>
       <description>Where Do People Drink The Most Beer, Wine And Spirits?Back in 2014, fivethiryeight.com published an article on alchohol consumption in different countries. The data drinks is available as part of the fivethirtyeight package. To get the data we install the fivethirtyeight package and upload the data.
-library(fivethirtyeight)data(drinks)What are the variable types? Any missing values we should worry about?
-We use skim() function to look through the main characteristics of the data set and find whether there are any NAs and what are the variable types:</description>
+library(fivethirtyeight)data(drinks)We visualize countries arranged by number of servings. We have three main categories of drinks: beer, wine and spirits. Let’s visualize them one by one:</description>
     </item>
     
   </channel>

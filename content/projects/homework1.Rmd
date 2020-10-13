@@ -130,7 +130,7 @@ ggplot(spirits, aes(y = reorder(country, spirit_servings), x = spirit_servings))
 
 ```
 
-> Conclusions:
+## Conclusions:
 
 The trends for three types of alcohol consumption are similar in the amount distribution while different in the list countries. All top 25 Beer countries have more than 200 servings consumed, while the average for the top 25 Beer and Wine countries are also close to 200 servings. Grenada, the highest spirits-consuming country, has a consumption greater than the highest of Beer (Namibia) and Wine (France). The high consumption of beer by Namibia may relate to its colonial history by German. 
 

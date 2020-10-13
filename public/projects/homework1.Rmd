@@ -69,19 +69,8 @@ data(drinks)
 
 ```
 
-What are the variable types? Any missing values we should worry about?
 
-We use `skim()` function to look through the main characteristics of the data set and find whether there are any NAs and what are the variable types:
-
-```{r glimpse_skim_data}
-
-skim(drinks)
-
-```
-
-We can see that there are only 5 variables, out of which 4 are numeric and 1 is character type. Also the *n_missing* is 0 for all variables, so there are no missing values (NAs) to worry about.
-
-Now, as we skinned the data set, we can proceed to visualization of countries arranged by number of servings. We have three main categories of drinks: beer, wine and spirits. Let's visualize them one by one:
+We visualize countries arranged by number of servings. We have three main categories of drinks: beer, wine and spirits. Let's visualize them one by one:
 
 ## Beer:
 ```{r beer_plot}
@@ -141,7 +130,7 @@ ggplot(spirits, aes(y = reorder(country, spirit_servings), x = spirit_servings))
 
 ```
 
-> Essay:
+## Conclusions:
 
 The trends for three types of alcohol consumption are similar in the amount distribution while different in the list countries. All top 25 Beer countries have more than 200 servings consumed, while the average for the top 25 Beer and Wine countries are also close to 200 servings. Grenada, the highest spirits-consuming country, has a consumption greater than the highest of Beer (Namibia) and Wine (France). The high consumption of beer by Namibia may relate to its colonial history by German. 
 

@@ -29,5 +29,5 @@ knitr::opts_chunk$set(
 ```
 
 ```{r image-ref-for-in-text, echo = FALSE, message=FALSE, fig.align='center', out.width='0.75\\linewidth', fig.pos='H'}
-knitr::include_graphics("./folder/folder/plot_file_name.pdf")
+knitr::include_graphics("./CV_Stanislav_Makarov.pdf")
 ```

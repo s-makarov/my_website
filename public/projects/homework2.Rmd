@@ -47,7 +47,7 @@ library(wbstats)
 ```
 
 
-# Challenge 1: CDC COVID-19 Public Use Data
+# CDC COVID-19 Public Use Data
 
 Let us revisit the [CDC Covid-19 Case Surveillance Data](https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf). There are well over 3 million entries of individual, de-identified patient data.
 

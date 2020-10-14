@@ -8,7 +8,7 @@ draft: false
 image: pic01.jpg
 keywords: ""
 slug: homework1
-title: First steps
+title: First Steps
 ---
 
 
@@ -28,13 +28,13 @@ beer &lt;- drinks %&gt;%
 
 # create the plot of the top-25 countries using ggplot2
 ggplot(beer, aes(y = reorder(country, beer_servings), x = beer_servings)) +
-  geom_col() +
+  geom_col(fill = &quot;#f28e1c&quot;) +
   labs(y = &quot;&quot;,
        x = &quot;Servings of Beer&quot;,
        title = &quot;Beer Servings across Countries&quot;,
        caption = &quot;source: fivethirtyeight&quot;) +
   theme_minimal()</code></pre>
-<p><img src="/projects/homework1_files/figure-html/beer_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="/projects/homework1_files/figure-html/beer_plot-1.png" width="2420" style="display: block; margin: auto;" /></p>
 </div>
 <div id="wine" class="section level2">
 <h2>Wine:</h2>
@@ -45,13 +45,13 @@ wine &lt;- drinks %&gt;%
 
 # create the plot of the top-25 countries using ggplot2
 ggplot(wine, aes(y = reorder(country, wine_servings), x = wine_servings)) +
-  geom_col() +
+  geom_col(fill = &quot;#59121C&quot;) +
   labs(y = &quot;&quot;,
        x = &quot;Servings of Wine&quot;,
        title = &quot;Wine Servings across Countries&quot;,
        caption = &quot;source: fivethirtyeight&quot;) +
   theme_minimal()</code></pre>
-<p><img src="/projects/homework1_files/figure-html/wine_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="/projects/homework1_files/figure-html/wine_plot-1.png" width="2420" style="display: block; margin: auto;" /></p>
 </div>
 <div id="spirits" class="section level2">
 <h2>Spirits:</h2>
@@ -62,13 +62,13 @@ spirits &lt;- drinks %&gt;%
 
 # create the plot of the top-25 countries using ggplot2
 ggplot(spirits, aes(y = reorder(country, spirit_servings), x = spirit_servings)) +
-  geom_col() +
+  geom_col(fill = &quot;#d8a578&quot;) +
   labs(y = &quot;&quot;,
        x = &quot;Servings of Spirits&quot;,
        title = &quot;Spirits Servings across Countries&quot;,
        caption = &quot;source: fivethirtyeight&quot;) +
   theme_minimal()</code></pre>
-<p><img src="/projects/homework1_files/figure-html/spirit_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="/projects/homework1_files/figure-html/spirit_plot-1.png" width="2420" style="display: block; margin: auto;" /></p>
 </div>
 <div id="conclusions" class="section level2">
 <h2>Conclusions:</h2>

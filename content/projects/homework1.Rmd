@@ -8,7 +8,7 @@ draft: false
 image: pic01.jpg
 keywords: ""
 slug: homework1
-title: First steps
+title: First Steps
 ---
 
 
@@ -73,7 +73,7 @@ data(drinks)
 We visualize countries arranged by number of servings. We have three main categories of drinks: beer, wine and spirits. Let's visualize them one by one:
 
 ## Beer:
-```{r beer_plot}
+```{r beer_plot, fig.width=11, dpi = 220}
 
 # get the top 25 countries
 beer <- drinks %>% 
@@ -82,7 +82,7 @@ beer <- drinks %>%
 
 # create the plot of the top-25 countries using ggplot2
 ggplot(beer, aes(y = reorder(country, beer_servings), x = beer_servings)) +
-  geom_col() +
+  geom_col(fill = "#f28e1c") +
   labs(y = "",
        x = "Servings of Beer",
        title = "Beer Servings across Countries",
@@ -93,7 +93,7 @@ ggplot(beer, aes(y = reorder(country, beer_servings), x = beer_servings)) +
 ```
 
 ## Wine:
-```{r wine_plot}
+```{r wine_plot, fig.width=11, dpi = 220}
 
 # get the top 25 countries
 wine <- drinks %>% 
@@ -102,7 +102,7 @@ wine <- drinks %>%
 
 # create the plot of the top-25 countries using ggplot2
 ggplot(wine, aes(y = reorder(country, wine_servings), x = wine_servings)) +
-  geom_col() +
+  geom_col(fill = "#59121C") +
   labs(y = "",
        x = "Servings of Wine",
        title = "Wine Servings across Countries",
@@ -112,7 +112,7 @@ ggplot(wine, aes(y = reorder(country, wine_servings), x = wine_servings)) +
 ```
 
 ## Spirits:
-```{r spirit_plot}
+```{r spirit_plot, fig.width=11, dpi = 220}
 
 # get the top 25 countries
 spirits <- drinks %>% 
@@ -121,7 +121,7 @@ spirits <- drinks %>%
 
 # create the plot of the top-25 countries using ggplot2
 ggplot(spirits, aes(y = reorder(country, spirit_servings), x = spirit_servings)) +
-  geom_col() +
+  geom_col(fill = "#d8a578") +
   labs(y = "",
        x = "Servings of Spirits",
        title = "Spirits Servings across Countries",

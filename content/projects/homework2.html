@@ -1,0 +1,84 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31"
+description: Covid Analysis
+draft: false
+image: pic01.jpg
+keywords: ""
+slug: homework2
+title: Covid Times
+---
+
+
+
+<div id="challenge-1-cdc-covid-19-public-use-data" class="section level1">
+<h1>Challenge 1: CDC COVID-19 Public Use Data</h1>
+<p>Let us revisit the <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf">CDC Covid-19 Case Surveillance Data</a>. There are well over 3 million entries of individual, de-identified patient data.</p>
+<pre class="r"><code># URL link to CDC to download data
+url &lt;- &quot;https://data.cdc.gov/api/views/vbim-akqf/rows.csv?accessType=DOWNLOAD&quot;
+
+covid_data &lt;- vroom::vroom(url)%&gt;%
+  clean_names()</code></pre>
+<p>Given the data we have, we produce two graphs that show death % rate:</p>
+<ul>
+<li>by age group, sex, and whether the patient had comorbidities or not</li>
+</ul>
+<pre class="r"><code>covid_comod &lt;- covid_data %&gt;% 
+  filter(medcond_yn == &quot;Yes&quot; | medcond_yn == &quot;No&quot;) %&gt;% 
+  filter(death_yn == &quot;Yes&quot; | death_yn == &quot;No&quot;) %&gt;% 
+  filter(sex == &quot;Male&quot; | sex == &quot;Female&quot;) %&gt;%
+  filter(age_group != &quot;Unknown&quot;, age_group != &quot;Missing&quot;, !is.na(age_group)) %&gt;% 
+  # filter(race_and_ethnicity_combined != &quot;Unknown&quot;, !is.na(race_and_ethnicity_combined)) %&gt;%
+  group_by(sex, age_group, medcond_yn)  %&gt;%
+  summarise(prop = count(death_yn == &quot;Yes&quot;)/n()) %&gt;% 
+  mutate(medcond_yn = case_when(
+           medcond_yn == &quot;Yes&quot; ~ &quot;With comorbidities&quot;,
+           medcond_yn == &quot;No&quot; ~ &quot;Without comorbidities&quot;
+         )) %&gt;%
+  mutate(prop = round(prop*100, 1))
+
+
+ggplot(covid_comod, aes(x = prop, y = age_group)) +
+  geom_col(fill = &quot;#6f7ba2&quot;, alpha = 0.9) +
+  facet_grid(medcond_yn ~ sex) +
+  theme_bw() +
+  labs(x = &quot;&quot;,
+       y = &quot;&quot;,
+       caption = &quot;Source: CDC&quot;) +
+  geom_text(aes(label = prop, x = prop + 3)) +
+  scale_x_continuous(labels = function(prop) paste0(prop, &quot;%&quot;))</code></pre>
+<p><img src="/projects/homework2_files/figure-html/unnamed-chunk-2-1.png" width="2160" style="display: block; margin: auto;" /></p>
+<ul>
+<li>by age group, sex, and whether the patient was admitted to Intensive Care Unit (ICU) or not.</li>
+</ul>
+<pre class="r"><code>covid_icu &lt;- covid_data %&gt;% 
+  filter(icu_yn == &quot;Yes&quot; | icu_yn == &quot;No&quot;,
+         death_yn == &quot;Yes&quot; | death_yn == &quot;No&quot;
+         ) %&gt;% 
+  filter(sex == &quot;Male&quot; | sex == &quot;Female&quot;) %&gt;% 
+  filter(age_group != &quot;Unknown&quot;, !is.na(age_group)) %&gt;% 
+  filter(race_and_ethnicity_combined != &quot;Unknown&quot;, !is.na(race_and_ethnicity_combined)) %&gt;%
+  group_by(sex, icu_yn, age_group, death_yn) %&gt;% 
+  summarize(ttl = n()) %&gt;% 
+  mutate(prop = ttl/sum(ttl),
+         icu_yn = case_when(
+           icu_yn == &quot;Yes&quot; ~ &quot;Admitted to ICU&quot;,
+           icu_yn == &quot;No&quot; ~ &quot;No ICU&quot;
+         )) %&gt;% 
+  filter(death_yn == &quot;Yes&quot;) %&gt;% 
+  mutate(prop = round(prop*100, 1))
+
+ggplot(covid_icu, aes(x = prop, y = age_group)) +
+  geom_col(fill = &quot;salmon&quot;, alpha = 0.85) +
+  facet_grid(icu_yn ~ sex) +
+  theme_bw() +
+  labs(title = &quot;Covid death % by age group, sex and whether patient was admitted to ICU&quot;,
+       x = &quot;&quot;,
+       y = &quot;&quot;,
+       caption = &quot;Source: CDC&quot;) +
+  geom_text(aes(label = prop, x = prop + 3)) +
+  scale_x_continuous(labels = function(prop) paste0(prop, &quot;%&quot;))</code></pre>
+<p><img src="/projects/homework2_files/figure-html/unnamed-chunk-3-1.png" width="2160" style="display: block; margin: auto;" /></p>
+</div>

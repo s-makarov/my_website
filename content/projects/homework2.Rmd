@@ -1,0 +1,132 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31"
+description: First Homework
+draft: false
+image: pic01.jpg
+keywords: ""
+slug: homework1
+title: First steps
+---
+
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+```{r load-libraries, include=FALSE}
+
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(here)
+library(skimr)
+library(janitor)
+library(httr)
+library(readxl)
+library(vroom)
+library(infer)
+library(DescTools)
+library(wbstats)
+
+```
+
+
+# Challenge 1: CDC COVID-19 Public Use Data
+
+Let us revisit the [CDC Covid-19 Case Surveillance Data](https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf). There are well over 3 million entries of individual, de-identified patient data.
+
+```{r, cache=TRUE}
+
+# URL link to CDC to download data
+url <- "https://data.cdc.gov/api/views/vbim-akqf/rows.csv?accessType=DOWNLOAD"
+
+covid_data <- vroom::vroom(url)%>%
+  clean_names()
+
+```
+
+Given the data we have, we produce two graphs that show death % rate:
+
+- by age group, sex, and whether the patient had comorbidities or not
+
+```{r, fig.width = 12, dpi = 180}
+
+covid_comod <- covid_data %>% 
+  filter(medcond_yn == "Yes" | medcond_yn == "No") %>% 
+  filter(death_yn == "Yes" | death_yn == "No") %>% 
+  filter(sex == "Male" | sex == "Female") %>%
+  filter(age_group != "Unknown", age_group != "Missing", !is.na(age_group)) %>% 
+  # filter(race_and_ethnicity_combined != "Unknown", !is.na(race_and_ethnicity_combined)) %>%
+  group_by(sex, age_group, medcond_yn)  %>%
+  summarise(prop = count(death_yn == "Yes")/n()) %>% 
+  mutate(medcond_yn = case_when(
+           medcond_yn == "Yes" ~ "With comorbidities",
+           medcond_yn == "No" ~ "Without comorbidities"
+         )) %>%
+  mutate(prop = round(prop*100, 1))
+
+
+ggplot(covid_comod, aes(x = prop, y = age_group)) +
+  geom_col(fill = "#6f7ba2", alpha = 0.9) +
+  facet_grid(medcond_yn ~ sex) +
+  theme_bw() +
+  labs(x = "",
+       y = "",
+       caption = "Source: CDC") +
+  geom_text(aes(label = prop, x = prop + 3)) +
+  scale_x_continuous(labels = function(prop) paste0(prop, "%"))
+
+```
+
+
+- by age group, sex, and whether the patient was admitted to Intensive Care Unit (ICU) or not.
+
+
+```{r, fig.width = 12, dpi = 180}
+
+covid_icu <- covid_data %>% 
+  filter(icu_yn == "Yes" | icu_yn == "No",
+         death_yn == "Yes" | death_yn == "No"
+         ) %>% 
+  filter(sex == "Male" | sex == "Female") %>% 
+  filter(age_group != "Unknown", !is.na(age_group)) %>% 
+  filter(race_and_ethnicity_combined != "Unknown", !is.na(race_and_ethnicity_combined)) %>%
+  group_by(sex, icu_yn, age_group, death_yn) %>% 
+  summarize(ttl = n()) %>% 
+  mutate(prop = ttl/sum(ttl),
+         icu_yn = case_when(
+           icu_yn == "Yes" ~ "Admitted to ICU",
+           icu_yn == "No" ~ "No ICU"
+         )) %>% 
+  filter(death_yn == "Yes") %>% 
+  mutate(prop = round(prop*100, 1))
+
+ggplot(covid_icu, aes(x = prop, y = age_group)) +
+  geom_col(fill = "salmon", alpha = 0.85) +
+  facet_grid(icu_yn ~ sex) +
+  theme_bw() +
+  labs(title = "Covid death % by age group, sex and whether patient was admitted to ICU",
+       x = "",
+       y = "",
+       caption = "Source: CDC") +
+  geom_text(aes(label = prop, x = prop + 3)) +
+  scale_x_continuous(labels = function(prop) paste0(prop, "%"))
+
+```
+

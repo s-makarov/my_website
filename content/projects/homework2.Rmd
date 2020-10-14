@@ -3,12 +3,12 @@ categories:
 - ""
 - ""
 date: "2017-10-31"
-description: First Homework
+description: Covid Analysis
 draft: false
 image: pic01.jpg
 keywords: ""
-slug: homework1
-title: First steps
+slug: homework2
+title: Covid Times
 ---
 
 

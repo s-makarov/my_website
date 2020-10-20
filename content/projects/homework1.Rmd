@@ -3,12 +3,12 @@ categories:
 - ""
 - ""
 date: "2020-09-27"
-description: My first steps with R and ggplot2 library. I use the dataset provided by [fivethiryeight](https://fivethirtyeight.com/features/dear-mona-followup-where-do-people-drink-the-most-beer-wine-and-spirits/) on the alcohol consumption in different countries to train the basic plotting skills.
+description: My first steps with R and ggplot2 library. I use the dataset provided by fivethiryeight on the alcohol consumption in different countries to train the basic plotting skills.
 draft: false
-image: pic01.jpg
+image: Alcohol.jpg
 keywords: ""
 slug: homework1
-title: My First Steps with ggplo2
+title: My First Steps with ggplot2
 ---
 
 

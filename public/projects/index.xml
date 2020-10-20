@@ -29,7 +29,7 @@ glimpse(hk_listings)## Rows: 11,187## Columns: 106## $ id &amp;lt;dbl&amp;gt;
     </item>
     
     <item>
-      <title>My First Steps with ggplo2</title>
+      <title>My First Steps with ggplot2</title>
       <link>/projects/homework1/</link>
       <pubDate>Sun, 27 Sep 2020 00:00:00 +0000</pubDate>
       

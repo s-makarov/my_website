@@ -11,6 +11,24 @@ slug: Hong_Kong
 title: Hong Kong Airbnb
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=10, 
+  fig.height=10,
+  dpi = 200, 
+  fig.align = "center"
+)
+```
+
+
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
 library(vroom)
 library(tidyverse)

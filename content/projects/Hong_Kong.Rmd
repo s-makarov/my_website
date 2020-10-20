@@ -23,7 +23,7 @@ options(digits = 3)
 knitr::opts_chunk$set(
   fig.width=10, 
   fig.height=10,
-  dpi = 200, 
+  dpi = 125, 
   fig.align = "center"
 )
 ```

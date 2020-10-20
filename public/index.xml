@@ -29,6 +29,16 @@ glimpse(hk_listings)## Rows: 11,187## Columns: 106## $ id &amp;lt;dbl&amp;gt;
     </item>
     
     <item>
+      <title>Inversion of Yield Curve and Recessions</title>
+      <link>/projects/yield_inversion/</link>
+      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/yield_inversion/</guid>
+      <description>Every so often, we hear warnings from commentators on the “inverted yield curve” and its predictive power with respect to recessions. An explainer what a inverted yield curve is can be found here. If you’d rather listen to something, here is a great podcast from NPR on yield curve indicators
+In addition, many articles and commentators think that, e.g., Yield curve inversion is viewed as a harbinger of recession. One can always doubt whether inversions are truly a harbinger of recessions, and use the attached parable on yield curve inversions.</description>
+    </item>
+    
+    <item>
       <title>My First Steps with ggplot2</title>
       <link>/projects/homework1/</link>
       <pubDate>Sun, 27 Sep 2020 00:00:00 +0000</pubDate>

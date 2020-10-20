@@ -48,8 +48,8 @@ disqusShortname = ""
       url = "#"
 
     [[params.navigation.links]]
-      name = "Projects"
-      url = "projects"
+      name = "Blogs"
+      url = "blogs"
 
     #[[params.navigation.links]]
     #  name = "Generic Blog"
@@ -107,7 +107,7 @@ disqusShortname = ""
       title = "Hong Kong Airbnb Analysis"
       subtitle = "In search for best linear model"
       image = "HK.jpg"
-      url = "projects/Final_Project_8A"
+      url = "projects/Hong Kong"
 
     [[params.tiles.showcase]]
       title = "My Experience"

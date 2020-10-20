@@ -83,7 +83,7 @@ disqusShortname = ""
     # the 'static/img' folder.
     title = "Hello, my name is Stanislav"
     subtitle = "I am an aspiring finance professional with interest in data analytics"
-    buttonText = "My Projects"
+    buttonText = "Recent Projects"
 
 
   # Tiles Section
@@ -104,8 +104,8 @@ disqusShortname = ""
       url = "projects/homework2"
 
     [[params.tiles.showcase]]
-      title = "My Experience"
-      subtitle = "1-page CV"
+      title = "Inverted Yield Curve"
+      subtitle = "Is the Recession comming?"
       image = "yield.jpg"
       url = "projects/yield_inversion"
 
@@ -139,7 +139,7 @@ disqusShortname = ""
   [params.two]
     enable = true
     title = "About Me"
-    subtitle = "I am a current Masters in Financial Analysis student at London Business School. Before coming to the London Business School I graduated from a dual degree programme of Higher School of Economics and University of London in Economics major. During the undergraduate I gradually developed interest in the Corporate Finance sphere and now I am looking for opportunities to start my career as an Investment Banker in London. Still I am willing to explore broader spectrum of subject and one of the spheres I am interested in is Data Analytics."
+    subtitle = "I am a current Masters in Financial Analysis student at London Business School. Before coming to the London Business School I graduated from a dual degree programme of Higher School of Economics and University of London in Economics major. During the undergraduate I gradually developed interest in the Corporate Finance sphere and now I am looking for opportunities to start my career as an Investment Banking Analyst in London. Still I am willing to explore broader spectrum of fields of knowledge and one of the most recent is Data Analytics."
     buttonText = "1-page CV"
     url = "post/CV_Stanislav_Makarov.pdf"
 

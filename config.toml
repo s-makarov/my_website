@@ -107,7 +107,7 @@ disqusShortname = ""
       title = "Hong Kong Airbnb Analysis"
       subtitle = "In search for best linear model"
       image = "HK.jpg"
-      url = "projects/Hong Kong"
+      url = "projects/Final_Project_8A"
 
     [[params.tiles.showcase]]
       title = "My Experience"

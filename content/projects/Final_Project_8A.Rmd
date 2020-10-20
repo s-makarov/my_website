@@ -2,12 +2,12 @@
 categories:
 - ""
 - ""
-date: "2017-10-31"
+date: "2020-10-20"
 description: Hong Kong Airbnb
 draft: false
 image: pic01.jpg
 keywords: ""
-slug: Hong Kong
+slug: Final_Project_8A
 title: Hong Kong Airbnb
 ---
 

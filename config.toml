@@ -51,9 +51,9 @@ disqusShortname = ""
       name = "Blogs"
       url = "blogs"
 
-    [[params.navigation.links]]
-      name = "Generic Blog"
-      url = "blogs/ipsum"
+    #[[params.navigation.links]]
+    #  name = "Generic Blog"
+    #  url = "blogs/ipsum"
 
     #[[params.navigation.links]]
     #  name = "Elements"
@@ -104,16 +104,16 @@ disqusShortname = ""
       url = "projects/homework2"
 
     [[params.tiles.showcase]]
-      title = "Magna"
-      subtitle = "Lorem Etiam Nullam"
-      image = "pic03.jpg"
-      url = "blogs/index"
+      title = "Hong Kong Airbnb Analysis"
+      subtitle = "In search for linear model"
+      image = "HK.jpg"
+      url = "projects/Hong Kong"
 
     [[params.tiles.showcase]]
       title = "My Experience"
       subtitle = "1-page CV"
       image = "pic04.jpg"
-      url = "post/CV_demon"
+      url = "post/CV_Stanislav_Makarov.pdf"
 
     #[[params.tiles.showcase]]
     #  title = "Consequat"

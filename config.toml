@@ -92,8 +92,8 @@ disqusShortname = ""
     # Display your showcases here.
     
     [[params.tiles.showcase]]
-      title = "Project 1"
-      subtitle = "First Steps"
+      title = "My First Steps"
+      subtitle = ""
       image = "pic01.jpg"
       url = "projects/homework1"
 
@@ -140,10 +140,6 @@ disqusShortname = ""
     enable = false
     title = "Turned Off"
     subtitle = ""
-    Mauris aliquet magna magna sed nunc rhoncus pharetra. 
-    Pellentesque condimentum sem. In efficitur ligula tate urna. Maecenas laoreet massa vel lacinia pellentesque lorem ipsum dolor. 
-    Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis libero.
-    Mauris aliquet magna magna sed nunc rhoncus amet pharetra et feugiat tempus."""
     buttonText = "Get Started"
     url = "blogs"
 

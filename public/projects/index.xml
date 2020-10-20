@@ -28,5 +28,15 @@
 library(fivethirtyeight)data(drinks)We visualize countries arranged by number of servings. We have three main categories of drinks: beer, wine and spirits. Let’s visualize them one by one:</description>
     </item>
     
+    <item>
+      <title>Hong Kong Airbnb</title>
+      <link>/projects/hong-kong/</link>
+      <pubDate>Tue, 31 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/hong-kong/</guid>
+      <description>hk_listings &amp;lt;- vroom(&amp;quot;http://data.insideairbnb.com/china/hk/hong-kong/2020-06-15/data/listings.csv.gz&amp;quot;)Exploratory Data Analysis (EDA)At first glance, there are 11187 observations of 106 variables in the data set. To improve efficiency, we carefully went through the list and selected 28 variables that we believe are most relevant to the following analysis.
+glimpse(hk_listings)## Rows: 11,187## Columns: 106## $ id &amp;lt;dbl&amp;gt; 69074, 75083, 103760, .</description>
+    </item>
+    
   </channel>
 </rss>

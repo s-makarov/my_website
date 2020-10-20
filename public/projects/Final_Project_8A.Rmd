@@ -1,0 +1,799 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31"
+description: Hong Kong Airbnb
+draft: false
+image: pic01.jpg
+keywords: ""
+slug: Hong Kong
+title: Hong Kong Airbnb
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=10, 
+  fig.height=10,
+  dpi = 200, 
+  fig.align = "center"
+)
+```
+
+```{r echo = FALSE}
+library(vroom)
+library(tidyverse)
+library(skimr)
+library(GGally)
+library(leaflet)
+library(sp)
+library(rgdal)
+library(mapview)
+library(ggfortify)
+library(huxtable)
+library(mosaic)
+library(ggpubr)
+library(scales)
+```
+
+```{r error = FALSE}
+
+hk_listings <- vroom("http://data.insideairbnb.com/china/hk/hong-kong/2020-06-15/data/listings.csv.gz")
+```
+
+# Exploratory Data Analysis (EDA)
+
+At first glance, there are **11187** observations of 106 variables in the data set. To improve efficiency, we carefully went through the list and selected **28** variables that we believe are most relevant to the following analysis. 
+```{r}
+glimpse(hk_listings)
+```
+```{r}
+hk_listings_clean <- hk_listings %>% 
+  subset(select = c(listing_url, host_id, host_response_time, host_response_rate, host_acceptance_rate, host_is_superhost, host_total_listings_count, neighbourhood_cleansed, latitude, longitude, property_type, room_type, is_location_exact, accommodates, bedrooms, bathrooms, beds, price, cleaning_fee, guests_included, extra_people, minimum_nights, maximum_nights, review_scores_rating, number_of_reviews, is_business_travel_ready, instant_bookable, cancellation_policy))
+
+```
+
+By glimpsing the new dataset we can straight away see some of the issues that need to be addressed such as a large number of **missing values** (N/As) as well as a few variables where observations are of **character** type but should be of **numeric** types. This includes important variables such as 'cleaning fee', 'extra people' and 'price'. 
+
+In addition, there are some variables that are **categorical**, such as for example: 'minimum or maximum nights' which are numeric variables or 'room or property type' which are character variables. There are also binary variables such as 'instant bookable' and 'business travel ready'. The full list is as follows:
+
+Categorical:
+
+- Host response time (character)
+- Host response rate (numeric)
+- Host acceptance rate (numeric)
+- Host is super host (binary)
+- Neighborhood cleansed (character)
+- Latitude (numeric)
+- Longitude (numeric)
+- Property type (character)
+- Room type (character)
+- Is location exact (binary)
+- Minimum/Maximum nights (numeric)
+- Review score rating (numeric)
+- Is business travel ready (binary)
+- Instant bookable (binary)
+
+We can see that most variables in the short-listed dataset are **categorical** i.e. can take one of a limited number of observations. Some of these are **numeric**, some are **character** and some are **binary** (can either be TRUE or FALSE)
+
+## Cleaning the data:
+
+```{r}
+
+ggplot(hk_listings_clean, aes(x = minimum_nights)) + #Check for the most common values in minimum_nights
+  geom_density() +
+  xlim(0, 40) +
+  labs(y = "Density",
+       x = "Minimum Nights",
+       title = "Most common value for 'minimum nights' is under 4") +
+  theme_bw()
+
+```
+
+```{r error = FALSE}
+
+skim(hk_listings_clean$cleaning_fee) #Checking for the number of N/As in 'cleaning fee'
+
+hk_listings_clean <- hk_listings_clean %>%
+  mutate(cleaning_fee = parse_number(cleaning_fee), #Changing the type of data from character to numeric
+         extra_people = parse_number(extra_people),
+         price = parse_number(price),
+         host_response_rate = parse_number(host_response_rate),
+         host_acceptance_rate = parse_number(host_acceptance_rate)) %>% 
+  mutate(cleaning_fee = case_when( #Changing N/As in the cleaning_fee to 97 (average cleaning fee => Expected cleaning fee?)
+    is.na(cleaning_fee) ~ 97, 
+    TRUE ~ cleaning_fee)) %>% 
+  filter(minimum_nights <= 4 & #filter for minimum stay of under 4 and maximum under 30 to filter for accommodation used for travel purposes only
+         !is.na(bedrooms) &
+         !is.na(bathrooms) & #There are missing values in `bedrooms`, `bathrooms`, `beds`. As rooms with no bedrooms/bathrooms/beds would have a corresponding value of 0, we should drop these NAs.
+         !is.na(beds) &
+         !is.na(review_scores_rating) &
+         price != 0) #'review_scores_rating' also has N/As, these will have corresponding value of 0.
+    
+hk_listings_clean <- hk_listings_clean %>%
+  filter(!is.na(host_response_rate) &
+         !is.na(host_acceptance_rate)) #filter out N/As in the 'host response rate' and 'host acceptance rate'
+
+glimpse(hk_listings_clean)
+
+```
+
+Here, we first changed some of the variable types to **numeric**. This includes variables such as 'price', 'extra people' and 'cleaning fee' which were previously character types.
+
+After skimming the cleaning_fee variable, we see that there are **5055** missing values. We look at why there could be missing values for the 'cleaning fee'. The reason could be that cleaning services were never used for the property and hence a price could not be stated. However, this does not mean that cleaning fee is 0. We therefore, decided to change all the missing values for the cleaning fee to **$97** which is the average of the observations for 'cleaning fee'. Hence, this could be thought of as the expected cleaning fee.
+
+Next, if we look at the density plot for 'minimum nights', it is clear that the observations are concentrated **under 4**, there is a also a lot of observations **around 29**. Since we want to analyse the property prices for **travel purposes only**, it makes sense to only include the observations that are below 4. This is because that way we capture most of the observations and also exclude observations concentrated around 29, which are clearly intended for non-travel purposes and would hence, not be applicable to our analysis. The values of around 29 could be explained by the hosts attempting to rent-out the property through Airbnb as the minimum stay is 1 month. This could apply to students staying for term-time or people living in the city for a prolonged period of time i.e. 1 month to a year. 
+
+As a final step in cleaning the data, we remove the **missing values** from variables such as number of beds/bedrooms/bathrooms, these **N/As** would have a corresponding value of 0, and could thus be useful for the analysis. In addition, we exclude the properties with values of $0, as these observations could be mistakes and could impact our regression analysis. 
+
+### Solve outliers:
+
+There are 33 types of **`property_type`** in the data set. To take a closer look, we use a bar chart to show the number of listings in each **`property_type`**.
+
+```{r}
+property <- hk_listings_clean %>% 
+  group_by(property_type) %>% 
+  count() %>% 
+  arrange(desc(n))
+
+ggplot(property, aes(y = reorder(property_type, n), x = n)) +
+  geom_col() +
+  labs(y = "",
+       x = "Count",
+       title = "Count of property types") +
+  theme_minimal()
+```
+
+We can see from the above graph that most property type is a **categorical** variables and the most common property types are **Apartment**, **Condo**, **Serviced Apartment**, **Hostel** and **Guesthouse**. The top 5 types make up 82% of total listings. Therefore, we simplify the **`property_type`** to have top 5 types and others to **prop_type_simplified**.
+
+```{r}
+
+hk_listings_clean <- hk_listings_clean %>%
+  mutate(prop_type_simplified = case_when(
+    property_type %in% c("Apartment","Condominium", "Serviced apartment", "Hostel", "Guesthouse") ~ property_type, 
+    TRUE ~ "Other"))
+
+glimpse(hk_listings_clean)
+```
+
+### Create the simplified neighbourhood
+
+```{r}
+
+hk_listings_clean <- hk_listings_clean %>%
+  mutate(neighbourhood_simplified = case_when(
+    neighbourhood_cleansed == "Sham Shui Po" |
+      neighbourhood_cleansed == "Yau Tsim Mong" |
+      neighbourhood_cleansed == "Kowloon City" |
+      neighbourhood_cleansed == "Wong Tai Sin" |
+      neighbourhood_cleansed == "Kwun Tong"  ~ "Kowloon",
+    neighbourhood_cleansed == "Central & Western" |
+      neighbourhood_cleansed == "Eastern" |
+      neighbourhood_cleansed == "Southern"|
+      neighbourhood_cleansed == "Wan Chai"~ "Hong Kong Island",
+    TRUE ~ "New Territories"
+  ))
+```
+
+
+## Exploring the data:
+
+### The Price
+
+Booking a room on Airbnb, we have three kind of charges to consider: **price** for room price, **extra_people** for extra people charge, **cleaning_fee** for cleaning charges. From the density graphs below, we can see that the prices are extremely right skewed, which makes senses as rooms in the city centre could be unbelievably expensive. The log price distribution would look closer to a normal distribution, which will be shown in the Regression analysis for the price of 4-night stay.
+
+```{r}
+hk_listings_clean %>%
+  select(`Room price` = price, `Extra people charge` = extra_people, `Cleaning fee` = cleaning_fee) %>% 
+  pivot_longer(cols = 1:3, names_to = "charge_type", values_to = "value") %>% 
+  ggplot(aes(value)) +
+  geom_density() +
+  facet_wrap(~charge_type, scales = "free") +
+  labs(x = "$ Price",
+       y = "",
+       title = "Prices are extremely right skewed",
+       subtitle = "Distributions of prices and charges",
+       caption = "Source: Airbnb") +
+  theme_bw()
+
+hk_listings_clean %>%
+  select(`Room price` = price, `Extra people charge` = extra_people, `Cleaning fee` = cleaning_fee) %>% 
+  pivot_longer(cols = 1:3, names_to = "charge_type", values_to = "value") %>% 
+  mutate(value_log = log(value)) %>% 
+  filter(is.finite(value_log)) %>% 
+  ggplot(aes(value_log)) +
+  geom_density() +
+  facet_wrap(~charge_type, scales = "free") +
+  labs(x = "Log Price",
+       y = "", 
+       title = "Log prices are closer to normal distribtuions",
+       subtitle = "Distributions of log prices and log charges",
+       caption = "Source: Airbnb") +
+  theme_bw()
+
+```
+
+### The location
+
+Locations are important. According to the graphs below, Kowloon has the most number of rooms but has the cheapest room price. On the other hand, rooms in Hong Kong island is the most expensive.
+
+```{r}
+
+hk_listings_clean %>% 
+  select(location = neighbourhood_simplified) %>% 
+  ggplot(aes(x =location, fill = location)) +
+  geom_bar(alpha=0.5) +
+  labs(x = "",
+       y = "",
+       title = "Kowloon has the most number of rooms",
+       subtitle = "The number of Airbnb rooms on the three islands",
+       caption = "Source: Airbnb") +
+  theme_bw() +
+  theme(legend.title = element_blank())
+
+hk_listings_clean %>% 
+  select(Location = neighbourhood_simplified, price) %>% 
+  ggplot(aes(x = price, fill = Location)) +
+  geom_density(alpha=0.2) +
+  scale_x_log10() +
+  labs(x = "Log room price",
+       y = "",
+       title = "Rooms in Hong Kong island are the most expensive",
+       subtitle = "Distribution of log room price on the three islands",
+       caption = "Source: Airbnb") +
+  theme_bw() +
+  theme(legend.title = element_blank())
+```
+
+
+### The host
+
+In Hong Kong, `r percent(length(which(hk_listings_clean$host_is_superhost))/length(hk_listings_clean$host_is_superhost))` of the hosts are **super hosts**. Most hosts respond and accept actively, and have less than 50 listings on Airbnb.
+
+```{r}
+
+hk_listings_clean %>%
+  select(host_is_superhost) %>% 
+  mutate(`Super host` = ifelse(host_is_superhost, "Super host", "Non-super host")) %>% 
+  ggplot(aes(x = `Super host`, fill = `Super host`)) +
+  geom_bar() +
+  labs(x = "",
+       y = "",
+       title = "Most hosts respond within an hour",
+       subtitle = "Distributions of respond time",
+       caption = "Source: Airbnb") +
+  theme_bw() +
+  theme(legend.title = element_blank())
+
+hk_listings_clean %>%
+  select(`Response rate` = host_response_rate, `Acceptance rate` = host_acceptance_rate, `Total listings` = host_total_listings_count, host_is_superhost) %>%
+  mutate(`Super host` = ifelse(host_is_superhost, "Super host", "Non-super host")) %>% 
+  pivot_longer(cols = 1:3, names_to = "host_data", values_to = "value") %>% 
+  ggplot(aes(x = value, fill = `Super host`)) +
+  geom_histogram() +
+  facet_wrap(~host_data, scales = "free") +
+  labs(x = "",
+       y = "",
+       title = "Most hosts respond actively, and have listings lower than 50",
+       subtitle = "Distributions of acceptance rate, response rate and total number of listings",
+       caption = "Source: Airbnb") +
+  theme_bw() + 
+  theme(legend.title = element_blank())
+
+hk_listings_clean %>%
+  select(host_response_time, host_is_superhost) %>% 
+  mutate(`Super host` = ifelse(host_is_superhost, "Super host", "Non-super host")) %>% 
+  ggplot(aes(x = host_response_time, fill = `Super host`)) +
+  geom_bar() +
+  labs(x = "",
+       y = "",
+       title = "Most hosts respond within an hour",
+       subtitle = "Distributions of respond time",
+       caption = "Source: Airbnb") +
+  theme_bw() +
+  theme(legend.title = element_blank())
+```
+
+### The room
+
+We expect that the number of **accommodates, bathrooms, bedrooms, beds** will have an impact on the price of the property, so we can plot a graph to check:  
+
+```{r}
+hk_listings_clean %>%
+  select(accommodates, bathrooms, bedrooms, beds, price) %>% 
+  pivot_longer(cols = 1:4, names_to = "room_data", values_to = "value") %>% 
+  ggplot(aes(x = value, y = price)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm", color="orange") +
+  facet_wrap(~room_data, scales = "free", ncol = 2) +
+  ylim(0, 2000) + #set limit at $2000 to exclude outliers on the graph
+  labs(x = "",
+       y = "",
+       title = "The number of accommodates, bathrooms, bedrooms and beds \n is positively correlated with price",
+       subtitle = "",
+       caption = "Source: Airbnb") +
+  theme_bw()
+```
+
+We also think the **type of room and property** will have an impact on the price, so we can plot a graph to check:
+
+```{r}
+hk_listings_clean %>% 
+  select(room_type, price) %>% 
+  ggplot(aes(x = price, fill = reorder(room_type, desc(price)))) +
+  geom_density(alpha=0.2) +
+  scale_x_log10() +
+  labs(x = "Log price",
+       y = "",
+       title = "Entire homes are the most expensive on average, while shared rooms are the cheapest",
+       subtitle = "Distribution of log room price for different room types",
+       caption = "Source: Airbnb") +
+  theme_bw() +
+  theme(legend.title = element_blank())
+
+hk_listings_clean %>% 
+  select(property_type, price) %>% 
+  ggplot(aes(x = price, fill = factor(property_type, levels = c("Apartment","Condominium", "Serviced apartment","Hostel", "Guesthouse", "Other")))) +
+  geom_density(alpha=0.2) +
+  scale_x_log10() +
+  labs(x = "Log price",
+       y = "",
+       title = "Apartments and houses are more likely to be expensive",
+       subtitle = "Distribution of log room price for different property types",
+       caption = "Source: Airbnb") +
+  theme_bw() +
+  theme(legend.title = element_blank())
+```
+
+### The ratings
+Another factor that could have an impact on the price is the **review rating** and **the number of ratings**:  
+```{r}
+
+hk_listings_clean %>%
+  select(`Review rating` = review_scores_rating, `Review number` =number_of_reviews, price) %>% 
+  pivot_longer(cols = 1:2, names_to = "review_data", values_to = "value") %>% 
+  ggplot(aes(x = value, y = price)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm", color="orange") +
+  facet_wrap(~review_data, scales = "free", ncol = 2) +
+  labs(x = "",
+       y = "$ Price",
+       title = "Reviews have no obvious relationship with room price",
+       subtitle = "",
+       caption = "Source: Airbnb") +
+  theme_bw()
+
+corr_rat <- cor(hk_listings_clean$review_scores_rating, hk_listings_clean$price) #Checking the correlation between the 2 variables
+
+paste0("The correlation between rating and price is ", round(corr_rat,2))
+
+```
+
+Here, we can see that there is **no correlation** between the **review rating** and the **price** of the property. This is indicated by scatter plot where no clear relationship can be seen and is further supported by the correlation output of **0.06** (almost 0).
+
+### The policy
+
+**Booking and canceling policies** could also have an impact on the price:
+
+```{r}
+
+# We reclassify `super_strict_30` and `super_strict_60` into `super strict`, to simplify analysis. 
+
+hk_listings_clean %>%
+  select(cancellation_policy, price) %>% 
+  mutate(cancel = case_when(
+    cancellation_policy == 'strict_14_with_grace_period' ~ 'Strict',
+    cancellation_policy == 'moderate' ~ 'Moderate', 
+    cancellation_policy == 'flexible' ~ 'Flexible',
+    TRUE ~ 'Super strict'
+  )) %>% 
+  group_by(cancel) %>% 
+  summarise(mean = mean(price)) %>% 
+  ggplot(aes(x = mean, y = cancel)) +
+  geom_col(size = 1) +
+  labs(x = "Mean price",
+       y = "",
+       title = "Cancellation policy has an impact on price, but probably in a nonlinear way",
+       subtitle = "Mean price for different cancellation policies",
+       caption = "Source: Airbnb") +
+  theme_bw()
+
+hk_listings_clean %>%
+  select(instant_bookable, price) %>% 
+  mutate(book = ifelse(instant_bookable, "Instant book", "Non-instant book")) %>% 
+  group_by(book) %>% 
+  summarise(mean = mean(price)) %>% 
+  ggplot(aes(x = mean, y = book)) +
+  geom_col(size = 1) +
+  labs(x = "Mean price",
+       y = "",
+       title = "Non-instant book rooms are more expensive",
+       subtitle = "Mean price for different booking policies",
+       caption = "Source: Airbnb") +
+  theme_bw()
+```
+
+
+# Map
+
+## ShapeFile
+```{r}
+# Importing ShapeFile for Hong Kong, from https://opendata.esrichina.hk/datasets/eea8ff2f12b145f7b33c4eef4f045513_0
+hk_dist <- readOGR("hk_dist_shp/HKDistrict18.shp")
+```
+
+## Map with apartments
+```{r dpi = 100}
+# Removing unused columns, to make the data more easy to handle for the entire group
+hk_listings_clean_2 <- hk_listings %>%
+  subset(select = c(listing_url, host_id, host_response_time, host_response_rate, host_acceptance_rate, host_is_superhost, host_total_listings_count, neighbourhood_cleansed, latitude, longitude, property_type, room_type, is_location_exact, accommodates, bedrooms, bathrooms, beds, price, cleaning_fee, guests_included, extra_people, minimum_nights, maximum_nights, review_scores_rating, number_of_reviews, is_business_travel_ready, instant_bookable, neighbourhood))
+ # filter(!is.na(neighbourhood))
+
+# Converting price from character to number value for filtering in the map
+hk_listings_clean_2$price <- parse_number(hk_listings_clean_2$price)
+
+
+
+# (My) R cannot deal with 11,000 + rows of data in leaflet with a shapefile, so I am using a random sample of the dataset to make the illustration
+hk_cut <- hk_listings_clean_2 %>%
+  sample_n(1000)
+
+hk_cut$price_quant <- cut(hk_cut$price, breaks = c(0, 295, 481, 798, 2000))
+
+# Factoring price according to the percentiles
+factpal <- colorFactor(topo.colors(5), hk_listings_clean$price_quant)
+pal <-  colorBin(palette =
+    c("#fef0d9", "#fdcc8a", "#fc8d59", "#e34a33", "#b30000"),
+    domain = hk_cut$price, bins = c(0, 200, 500, 800, 15000))
+
+leaflet(hk_dist) %>%
+  # Adding polygons from hk_dist to be able to group data by district
+  addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
+    opacity = 1.0, fillOpacity = 0.5,
+    fillColor = ~pal(hk_cut$price),
+    highlightOptions = highlightOptions(color = "white", weight = 2,
+      bringToFront = TRUE),
+    label = ~hk_cut$neighbourhood) %>%
+  addProviderTiles(providers$Stamen.TonerLines,
+    options = providerTileOptions(opacity = 0.35)) %>%
+  addCircleMarkers(lng = ~hk_listings_clean$longitude,
+                   lat = ~hk_listings_clean$latitude,
+                   radius = 2,
+                   fillColor = "#ff5a5f",
+                   fillOpacity = 0.7,
+                   popup = ~hk_listings_clean$listing_url,
+                   label = ~hk_listings_clean$price,
+                   stroke = 0.2,
+                   clusterOptions = markerClusterOptions()
+                   ) %>%
+  addLegend("bottomright", pal = pal, values = "", labels = c("0-199", "200-499", "500-799", "800-15000", "1500+"), title = "AirBnB Prices in District", opacity = 1)
+```
+
+
+The above map of Hong Kong is divided into districts. The colour of each district represents the average Airbnb prices in the district, red represents higher prices while lighter colours show the cheaper properties. The properties are grouped by their density in the area and are represented by bubbles. Orange/yellow colour of the bubbles represents higher density areas, while green are less dense areas. The number within the bubble is the number of properties within the bubble. Clicking a bubble would zoom into the area closer and further divide the bubble into more groups within the zoomed-in area.
+
+
+# Regressions
+
+Our regression analysis is conducted in several steps:
+
+- Firstly, we need to create the variable of our interest and clean the data a little bit
+- Secondly, we analyse the new variable and look at some relationships within the data set
+- Thirdly, we fit several models and compare them in terms of their explanatory power and usability
+- Lastly, we proceed to the prediction for the travel defined in the task and confidence interval for it
+
+## Preparing the data
+
+In this part we create the variable for the 4 nights stay for 2 people for each property. As some properties allow only 1 person and charge extra money for any extra visitor, we have to adjust the price of one night to this extra charge.
+
+After creation of the new variable we remove some unnecessary variables and create a simplified neighbourhood variable and a logarithm of the price of 4 night stay. The simplified neighbourhood is built according to the knowledge of the city (it is divided in 3 main regions: **Kowloon**, **Hong Kong Island**, **New Territories**), while logarithm of main dependent variable is taken to resolve some potential issues with skewness of data, which will be analysed in the next section.
+
+```{r}
+
+#create the 4 night variable, accounting for extra person
+
+hk_listings_clean <- hk_listings_clean %>% 
+  mutate(extr_p_charge = ifelse(guests_included<2 & extra_people != 0, extra_people, 0)) %>% 
+  mutate(f_night = 4*(price+ extr_p_charge) + cleaning_fee)
+hk_listings_clean$room_type <- factor(hk_listings_clean$room_type)
+
+#create a separate more clean data set for regressions
+#also create a new neighbourhood variable and the logarithm of 4 nights price
+
+hk_listings_reg <- hk_listings_clean %>% 
+  select(f_night, host_is_superhost, neighbourhood_simplified,
+         prop_type_simplified, room_type, accommodates, bedrooms, bathrooms, beds,
+         is_business_travel_ready, instant_bookable, number_of_reviews,
+         review_scores_rating, cancellation_policy, is_location_exact) %>% 
+  mutate(lg_fnight = log(f_night))
+         
+```
+
+## Pre-regression analysis of data
+
+We start with analysis of the main dependent variable:
+
+```{r}
+
+#Plot density graph of four nights cost
+
+ggplot(hk_listings_reg, aes(x = f_night)) +
+  geom_density() +
+  labs(x = "$ Price of 4 Nights for 2 people",
+       y = "")
+
+#Plot density graph of logarithm of four nights cost
+
+ggplot(hk_listings_reg, aes(x = lg_fnight)) + 
+  geom_density() +
+  labs(x = "Log Price of 4 Nights for 2 people",
+       y = "")
+
+```
+
+As the log cost of 4 nights has a closer form to normal distribution, it should be used instead of simple cost of 4 nights to satisfy the assumption of linear regression for normally distributed errors. It is still not the ideal distribution, but it is much less skewed. So, we still expect the regression models to show not-normal residuals.
+
+Now we can analyse the relationship between numerical variables within the dataset:
+
+```{r}
+ggpairs(hk_listings_reg[6:9])
+```
+
+We can see from the chart that accommodates has very high correlation with beds and bedrooms (both more than 0.6), so we will not include all these variables to the same model.
+We will test couple of models with beds/bedrooms based on `frst_model` in the next section, as including both beds and bedrooms might be counter intuitive to the common sense into 1 model. Moreover, we see that bathrooms, bedrooms and beds have moderate correlation too, but it should be bearable for modeling. We still should keep an eye on possible multicollinearity in the model.
+
+
+## Regression models
+
+### Basic models
+
+Now as the data is cleared and some initial analysis is conducted we can move on to the regressions. As said previously, for all the regressions we will use the logarithm of the price for 4-night stay.
+
+We start with two basic models, which utilize reviews of hosts and type of the property they are renting out. Then we add the room type as a possibly important variable:
+
+```{r}
+model1 <- lm(data = hk_listings_reg, lg_fnight ~ prop_type_simplified + review_scores_rating + number_of_reviews)
+msummary(model1)
+#check the residuals
+autoplot(model1) + theme_bw()
+#check multicollinearity
+car::vif(model1)
+
+model2 <- lm(data = hk_listings_reg, lg_fnight ~ prop_type_simplified + review_scores_rating + number_of_reviews + room_type)
+msummary(model2)
+#check the residuals
+autoplot(model2) + theme_bw()
+#check multicollinearity
+car::vif(model2)
+```
+> Interpretation of `model1` coefficients:
+
+`review_scores_rating`: One point increase in review rating will bring on average 0.7724% increase in price of the 4-night stay of two guests in Apartment in Hong Kong, keeping everything else constant (*ceteris paribus*)
+
+`prop_type_simplified`:
+- `Condominium`: The average price of the 4-night stay of two guests in Condominium in Hong Kong is 17.7% lower than in the Apartment, keeping everything else constant (*ceteris paribus*)
+-`Guesthouse`:The average price of the 4-night stay of two guests in Guest House in Hong Kong is 56.87% lower than in the Apartment, keeping everything else constant (*ceteris paribus*)
+-`Hostel`:The average price of the 4-night stay of two guests in Hostel in Hong Kong is 61.4% lower than in the Apartment, keeping everything else constant (*ceteris paribus*)
+-`Serviced Apartments`:The average price of the 4-night stay of two guests in Serviced Apartments in Hong Kong is 25.85% lower than in the Apartment, keeping everything else constant (*ceteris paribus*)
+-`Other`:The average price of the 4-night stay of two guests in any other type of accommodation in Hong Kong is 11.28% lower than in the Apartment, keeping everything else constant (*ceteris paribus*)
+
+> Summary about basic models:
+
+We can see that for the both models the residuals are not normal (due to significant deviation of higher tail on Q-Q graph), which is highly likely due to the natural skewness of the data with high outliers (extremely expensive accommodations). Moreover, we have one observation with significantly high leverage, which might affect the results of the regressions. Still neither of the two models suffer from multicollinearity as in VGIF are lower than 5.
+
+We can see that `model2` performs much better in terms of adjusted R-squared, so we will use it as a base model for further analysis.
+
+### More comprehensive models
+
+Now using the `model2` as the base we analyse all the selected variables in the first part of the regression analysis section. We will not inteprete all the coefficients within the models we are fitting, as it will not differ a lot in its logic. At the end we will interprete everything in the "best" model we choose.
+
+```{r}
+
+#Add the beds and bathrooms variables, then compare it to the model with bedrooms, both of them and without bathroom
+
+frst_model_bed <- lm(data = hk_listings_reg, lg_fnight ~ prop_type_simplified + review_scores_rating + number_of_reviews + room_type + beds + bathrooms)
+msummary(frst_model_bed)
+
+autoplot(frst_model_bed)
+car::vif(frst_model_bed)
+
+frst_model_bedroom <- lm(data = hk_listings_reg, lg_fnight ~ prop_type_simplified +
+                           review_scores_rating + number_of_reviews + room_type + bedrooms + bathrooms)
+msummary(frst_model_bedroom)
+
+autoplot(frst_model_bedroom)
+car::vif(frst_model_bedroom)
+
+frst_model_both <- lm(data = hk_listings_reg, lg_fnight ~ prop_type_simplified + 
+                        review_scores_rating + number_of_reviews + room_type + bedrooms + bathrooms + beds)
+msummary(frst_model_both)
+
+autoplot(frst_model_both)
+car::vif(frst_model_both)
+
+frst_model_wb <- lm(data = hk_listings_reg, lg_fnight ~ prop_type_simplified +
+                      review_scores_rating + number_of_reviews + room_type + bedrooms + beds)
+msummary(frst_model_wb)
+
+autoplot(frst_model_wb)
+car::vif(frst_model_wb)
+
+
+huxreg("Bed" = frst_model_bed, "Bedroom" = frst_model_bedroom,
+       "Both" = frst_model_both, "W/o Bathroom" = frst_model_wb)
+
+```
+
+The models with both `beds` and `bedrooms` are better than the other two (in terms of adjusted R-squared and R-squared) and, which is more important the analysis by `car::vif()` shows that all values are below 5, meaning that there is no multicollinearity. So, maybe it seemed initially than using both `beds` and `bedrooms` would be problematic, but after the regression analysis it shows that both variables are significant and usable. Which is more interesting, after the introductions of `bedrooms`, the variable `bathrooms` becomes insignificant and can be removed (as it doesn't affect the explanatory power). So, the model with both `beds` and `bedrooms`, but without `bathrooms` will be used as a basis for the next models:
+
+```{r}
+
+#replicating the model analysis for each setting
+
+second_model <- lm(data = hk_listings_reg, lg_fnight ~ prop_type_simplified + review_scores_rating +
+                     number_of_reviews + room_type + beds + bedrooms + host_is_superhost)
+msummary(second_model)
+
+autoplot(second_model)
+car::vif(second_model)
+
+third_model <- lm(data = hk_listings_reg, lg_fnight ~ prop_type_simplified + review_scores_rating +
+                    number_of_reviews + room_type + beds + bedrooms + is_location_exact)
+msummary(third_model)
+
+autoplot(third_model)
+car::vif(third_model)
+
+fourth_model <- lm(data = hk_listings_reg, lg_fnight ~ prop_type_simplified + review_scores_rating +
+                     number_of_reviews + room_type + beds + bedrooms + neighbourhood_simplified)
+msummary(fourth_model)
+
+autoplot(fourth_model)
+car::vif(fourth_model)
+
+fifth_model <- lm(data = hk_listings_reg, lg_fnight ~ prop_type_simplified + review_scores_rating +
+                    number_of_reviews + room_type + beds + bedrooms + cancellation_policy)
+msummary(fifth_model)
+
+autoplot(fifth_model)
+car::vif(fifth_model)
+
+
+all_model <- lm(data = hk_listings_reg, lg_fnight ~ prop_type_simplified + review_scores_rating +
+                  number_of_reviews + room_type + beds + bedrooms + bathrooms + cancellation_policy +
+                  neighbourhood_simplified + is_location_exact + host_is_superhost)
+msummary(all_model)
+
+autoplot(all_model)
+car::vif(all_model)
+
+
+selective_model <- lm(data = hk_listings_reg, lg_fnight ~ prop_type_simplified + review_scores_rating +
+                        number_of_reviews + room_type + beds + bedrooms + cancellation_policy +
+                        neighbourhood_simplified + host_is_superhost)
+msummary(selective_model)
+
+autoplot(selective_model)
+car::vif(selective_model)
+```
+
+```{r, fig.width = 8, dpi = 80}
+#make the final comparison
+
+huxreg("Best Base" = model2, "First Model w/o Bathroom" = frst_model_wb,
+       "Add Superhost" = second_model,"Add Location" = third_model,
+       "Add Neighbourhood" = fourth_model, "Add Cancellation" = fifth_model,
+       "All Variables" = all_model, "Selection" = selective_model)
+```
+
+
+Analyzing the models from above we can see that the models with `neighbourhood_simplified` variable are significantly better and it really explains a lot also in the common sense, as Hong Kong can be separated in three distinct areas, which have different real estate properties. Still the best way to model the price turns out to include all the main variables and maybe delete the `bathrooms` variable, which is not significant and we can even see that AIC is lower for the model without it. So, we believe that the best model for the prediction is the `selective_model` with R-squared to 0.417.
+
+### Interpretations for the "best" model coefficients
+
+`Intercept`: 
+
+The average price of a 4-night stay for 2 guests in Hong Kong Island in an Apartment Entire home (room type) provided by a usual host (`superhost == FALSE`) with a flexible cancellation policy with zero review rating and zero number of reviews with 1 bedroom and 1 bed is equal to 1793.6358$ (e^(7.232+0.168+0.092)) 
+
+`prop_type_simplified`: 
+
+- `Condominium`: The average price of a 4-night stay for 2 guests in Hong Kong Island in a Condominium as Entire home (room type) provided by a usual host (`superhost == FALSE`) with a flexible cancellation policy is 9.7% lower than in the Apartment, keeping everything else constant (*ceteris paribus*) 
+- `Guesthouse`: The average price of a 4-night stay for 2 guests in Hong Kong Island in a Guest House as Entire home (room type) provided by a usual host (`superhost == FALSE`) with a flexible cancellation policy is 23% lower than in the Apartment, keeping everything else constant (*ceteris paribus*) 
+- `Hostel`: The average price of a 4-night stay for 2 guests in Hong Kong Island in a Hostel as Entire home (room type) provided by a usual host (`superhost == FALSE`) with a flexible cancellation policy is 29.8% lower than in the Apartment, keeping everything else constant (*ceteris paribus*) 
+- `Serviced Apartments`: The average price of a 4-night stay for 2 guests in Hong Kong Island in a Serviced Apartment as Entire home (room type) provided by a usual host (`superhost == FALSE`) with a flexible cancellation policy is 0.6% higher than in the Apartment, keeping everything else constant (*ceteris paribus*). *Note that this variable is not significant on 5% significance level* 
+- `Other`: The average price of a 4-night stay for 2 guests in Hong Kong Island in any other type of accommodation as Entire home (room type) provided by a usual host (`superhost == FALSE`) with a flexible cancellation policy is 9.5% higher than in the Apartment, keeping everything else constant (*ceteris paribus*) 
+
+`room_type`: 
+
+- `Hotel Room`: The average price of a 4-night stay for 2 guests in Hong Kong Island in an Apartment as Hotel room provided by a usual host (`superhost == FALSE`) with a flexible cancellation policy is 26% lower than as in the Entire Home, keeping everything else constant (*ceteris paribus*) 
+- `Private Room`: The average price of a 4-night stay for 2 guests in Hong Kong Island in an Apartment as Private Room provided by a usual host (`superhost == FALSE`) with a flexible cancellation policy is 38.7% lower than as in the Entire Home, keeping everything else constant (*ceteris paribus*) 
+- `Shared Room`: The average price of a 4-night stay for 2 guests in Hong Kong Island in an Apartment as Shared Room provided by a usual host (`superhost == FALSE`) with a flexible cancellation policy is 68% lower than as in the Entire Home, keeping everything else constant (*ceteris paribus*) 
+
+`neighbourhood_simplified`: 
+
+- `Kowloon`: The average price of a 4-night stay for 2 guests in Kowloon in an Apartment as Entire home provided by a usual host (`superhost == FALSE`) with a flexible cancellation policy is 26% lower than as in Hong Kong Island, keeping everything else constant (*ceteris paribus*) 
+- `New Territories`: The average price of a 4-night stay for 2 guests in New Territories in an Apartment as Entire home provided by a usual host (`superhost == FALSE`) with a flexible cancellation policy is 28.1% lower than as in Hong Kong Island, keeping everything else constant (*ceteris paribus*) 
+
+`cancellation_policy`: 
+
+- `moderate`: The average price of a 4-night stay for 2 guests in Hong Kong Island in an Apartment as Entire home provided by a usual host (`superhost == FALSE`) with a moderate cancellation policy is 13.5% higher than as with a flexible cancellation policy, keeping everything else constant (*ceteris paribus*)
+- `strict_14_with_grace_period`: The average price of a 4-night stay for 2 guests in Hong Kong Island in an Apartment as Entire home provided by a usual host (`superhost == FALSE`) with a strickt cancellation policy with 14 days grace period is 24.45% higher than as with a flexible cancellation policy, keeping everything else constant (*ceteris paribus*)
+- `super_strict_30`: The average price of a 4-night stay for 2 guests in Hong Kong Island in an Apartment as Entire home provided by a usual host (`superhost == FALSE`) with a super strict cancellation policy (30 days) is 24.4% higher than as with a flexible cancellation policy, keeping everything else constant (*ceteris paribus*)
+- `super_strict_60`: The average price of a 4-night stay for 2 guests in Hong Kong Island in an Apartment as Entire home provided by a usual host (`superhost == FALSE`) with a super strict cancellation policy (60 days) is 69.6% higher than as with a flexible cancellation policy, keeping everything else constant (*ceteris paribus*)
+
+`host_is_superhost`: 
+
+The average price of a 4-night stay for 2 guests in Hong Kong Island in an Apartment Entire home (room type) provided by a superhost (`superhost == TRUE`) with a flexible cancellation policy is 17.72% higher than the one provided by the usual host, keeping everything else constant(*ceteris paribus*) 
+
+`beds`: 
+
+On average each additional bed to the Entire home Apartment in Hong Kong Island provided by a usual host with a flexible cancellation policy increases the price of a 4-night stay for 2 people by 9.22%, keeping everything else constant(*ceteris paribus*) 
+
+`bedrooms`: 
+
+On average each additional bedroom to the Entire home Apartment in Hong Kong Island provided by a usual host with a flexible cancellation policy increases the price of a 4-night stay for 2 people by 16.77%, keeping everything else constant(*ceteris paribus*) 
+
+`review_scores_rating`: 
+
+On average each extra point of rating in reviews of the Entire home Apartment in Hong Kong Island provided by a usual host with a flexible cancellation policy increases the price of a 4-night stay for 2 people by 0.44%, keeping everything else constant(*ceteris paribus*) 
+
+`number_of_reviews`: 
+
+On average each additional reviews left for the Entire home Apartment in Hong Kong Island provided by a usual host with a flexible cancellation policy decreases the price of a 4-night stay for 2 people by 0.07%, keeping everything else constant(*ceteris paribus*) 
+
+
+### Intuitive Explanation for the results
+
+Interpreting the "best" regression we can see that there are some quite expected results, including the highest average rent price in the Hong Kong Island (which has the business centres and expensive real estate properties). Also the Entire home room type is the most expensive, which was quite expected. Also the status of Superhost brings additional price of the rent. The number of beds and bedrooms quite intuitively increase the price, as bigger flats fitting more people tend to cost more. The same with the rating: higher rated places tend to have higher price. 
+
+The interesting findings include that the more strict cancellation policy is associated with more expensive appartments, which might be explained by the fact that owners of luxurious Airbnb properties want to be sure to maximize their renting income. Moreover, Other property types seem to be quite expensive (on the same level with the Apartment), as it includes different types of luxury and simple properties. The last intersting thing to notice that the number of reviews have negative relationship with the price. There is no clear explanation of the fact, but we can hypothesize that the properties which dissatisfied the guests tend to receive more reviews (as people tend to complain more often than leave positive reviews) and landlords have lower prices to attract guest to such places.
+
+## Prediction with the best model
+
+Now we can make a prediction for 2 people traveling to Hong Kong for 4 nights
+
+```{r}
+
+hk_listings_reg <- hk_listings_reg %>% 
+  add_row(f_night = 1,
+          host_is_superhost = TRUE,
+          neighbourhood_simplified = "Hong Kong Island",
+          prop_type_simplified = "Apartment",
+          room_type = "Private room",
+          accommodates = 1,
+          bedrooms = 1,
+          bathrooms = 1,
+          beds = 1,
+          is_business_travel_ready = TRUE,
+          instant_bookable = TRUE,
+          number_of_reviews = 10,
+          review_scores_rating = 90,
+          cancellation_policy = "moderate",
+          is_location_exact = TRUE,
+          lg_fnight = 0)
+
+pred <- exp(predict.lm(selective_model, hk_listings_reg[dim(hk_listings_reg)[1],], interval = "confidence"))
+
+paste0("The expected price for 2 people to stay 4 nights in a private room apartment in Honk Kong is ", round(pred[1],2), "$")
+paste0("The 95% confidence interval for the price for 2 people to stay 4 nights in a private room apartment in Honk Kong is between ",
+       round(pred[2],2), "$ and ", round(pred[3],2), "$")
+
+```
+
+# Summary
+
+We started with over 11,000 observations split among over 100 variables. We then narrowed down the list of variables to 27, removing the unnecessary text variables, which we are not able to implement for regression analysis. Then we removed the missing values from the variables and cleaned the data accordingly so that each observation provides a quality input into the EDA and regression analysis. We provided some initial analysis of the data relating to the correlation of different variables with the property prices and provided some in-depth look at some of the variables. 
+
+Next we constructed a map of Hong Kong to have a visual representation of how the properties are spread across Hong Kong, the price variability between districts as well as the availability of Airbnb properties in different areas. The map allows us to see which areas more expensive and which areas have more properties. 
+
+Finally, we produced a regression analysis that looks at how adding the different variables one-by-one affects the predicting power of the regression. We start with basic models and gradually add new variables. We arrive at the `selective_model`, which utilizes nearly all the variables from the selected ones and has quite high explanatory power with adjusted R^2 of 0.417.
+

@@ -7,7 +7,7 @@ description: Hong Kong Airbnb
 draft: false
 image: pic01.jpg
 keywords: ""
-slug: Hong Kong
+slug: Hong_Kong
 title: Hong Kong Airbnb
 ---
 

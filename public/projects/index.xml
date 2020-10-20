@@ -29,12 +29,12 @@ glimpse(hk_listings)## Rows: 11,187## Columns: 106## $ id &amp;lt;dbl&amp;gt;
     </item>
     
     <item>
-      <title>First Steps</title>
+      <title>My First Steps with ggplo2</title>
       <link>/projects/homework1/</link>
-      <pubDate>Tue, 31 Oct 2017 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 27 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>/projects/homework1/</guid>
-      <description>Where Do People Drink The Most Beer, Wine And Spirits?Back in 2014, fivethiryeight.com published an article on alchohol consumption in different countries. The data drinks is available as part of the fivethirtyeight package. To get the data we install the fivethirtyeight package and upload the data.
+      <description>Where Do People Drink The Most Beer, Wine And Spirits?Back in 2014, fivethiryeight.com published an article on alcohol consumption in different countries. The data drinks is available as part of the fivethirtyeight package. To get the data we install the fivethirtyeight package and upload the data.
 library(fivethirtyeight)data(drinks)We visualize countries arranged by number of servings. We have three main categories of drinks: beer, wine and spirits. Let’s visualize them one by one:</description>
     </item>
     

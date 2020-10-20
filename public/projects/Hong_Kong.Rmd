@@ -3,7 +3,7 @@ categories:
 - ""
 - ""
 date: "2020-10-20"
-description: Hong Kong Airbnb
+description: Our team analysed the data set of more than 11000 places in Hong Kong. We tried to identify interesting facts within the Airbnb offers and fit a linear model to use for further predictions of cost of 4-night stay for 2 people in Hong Kong.
 draft: false
 image: pic01.jpg
 keywords: ""

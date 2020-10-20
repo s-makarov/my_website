@@ -13,7 +13,7 @@
       <pubDate>Tue, 20 Oct 2020 00:00:00 +0000</pubDate>
       
       <guid>/projects/hong_kong/</guid>
-      <description>## Registered S3 methods overwritten by &amp;#39;readr&amp;#39;:## method from ## format.col_spec vroom## print.col_spec vroom## print.collector vroom## print.date_names vroom## print.locale vroom## str.col_spec vroom## -- Attaching packages ------------------------------------------------------------------------------------------------------------------------------------ tidyverse 1.3.0 --## v ggplot2 3.3.2 v purrr 0.3.4## v tibble 3.0.3 v dplyr 1.0.2## v tidyr 1.1.2 v stringr 1.4.0## v readr 1.</description>
+      <description>## Rows: 11,187## Columns: 106## Delimiter: &amp;quot;,&amp;quot;## chr [46]: listing_url, name, summary, space, description, experiences_offered, neighborho...## dbl [38]: id, scrape_id, host_id, host_listings_count, host_total_listings_count, latitud...## lgl [17]: thumbnail_url, medium_url, xl_picture_url, host_is_superhost, host_has_profile_...## date [ 5]: last_scraped, host_since, calendar_last_scraped, first_review, last_review## ## Use `spec()` to retrieve the guessed column specification## Pass a specification to the `col_types` argument to quiet this messageExploratory Data Analysis (EDA)At first glance, there are 11187 observations of 106 variables in the data set.</description>
     </item>
     
     <item>

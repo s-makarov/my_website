@@ -11,7 +11,7 @@ slug: Hong_Kong
 title: Hong Kong Airbnb
 ---
 
-```{r echo = FALSE}
+```{r echo = FALSE, message = FALSE, warning = FALSE}
 library(vroom)
 library(tidyverse)
 library(skimr)
@@ -27,7 +27,7 @@ library(ggpubr)
 library(scales)
 ```
 
-```{r error = FALSE}
+```{r error = FALSE, echo = FALSE}
 
 hk_listings <- vroom("http://data.insideairbnb.com/china/hk/hong-kong/2020-06-15/data/listings.csv.gz")
 ```

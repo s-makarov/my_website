@@ -7,7 +7,7 @@ description: My first steps with R and ggplot2 library. I use the dataset provid
 draft: false
 image: Alcohol.jpg
 keywords: ""
-slug: homework1
+slug: alcohol_consumption
 title: My First Steps with ggplot2
 ---
 

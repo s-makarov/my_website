@@ -19,10 +19,10 @@ glimpse(hk_listings)## Rows: 11,187## Columns: 106## $ id &amp;lt;dbl&amp;gt;
     
     <item>
       <title>Covid Times</title>
-      <link>/projects/homework2/</link>
+      <link>/projects/covid/</link>
       <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>/projects/homework2/</guid>
+      <guid>/projects/covid/</guid>
       <description>CDC COVID-19 Public Use DataLet us revisit the CDC Covid-19 Case Surveillance Data. There are well over 3 million entries of individual, de-identified patient data.
 # URL link to CDC to download dataurl &amp;lt;- &amp;quot;https://data.cdc.gov/api/views/vbim-akqf/rows.csv?accessType=DOWNLOAD&amp;quot;covid_data &amp;lt;- vroom::vroom(url)%&amp;gt;%clean_names()Given the data we have, we produce two graphs that show death % rate:
 by age group, sex, and whether the patient had comorbidities or notcovid_comod &amp;lt;- covid_data %&amp;gt;% filter(medcond_yn == &amp;quot;Yes&amp;quot; | medcond_yn == &amp;quot;No&amp;quot;) %&amp;gt;% filter(death_yn == &amp;quot;Yes&amp;quot; | death_yn == &amp;quot;No&amp;quot;) %&amp;gt;% filter(sex == &amp;quot;Male&amp;quot; | sex == &amp;quot;Female&amp;quot;) %&amp;gt;%filter(age_group !</description>
@@ -40,10 +40,10 @@ In addition, many articles and commentators think that, e.g., Yield curve invers
     
     <item>
       <title>My First Steps with ggplot2</title>
-      <link>/projects/homework1/</link>
+      <link>/projects/alcohol_consumption/</link>
       <pubDate>Sun, 27 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>/projects/homework1/</guid>
+      <guid>/projects/alcohol_consumption/</guid>
       <description>Where Do People Drink The Most Beer, Wine And Spirits?Back in 2014, fivethiryeight.com published an article on alcohol consumption in different countries. The data drinks is available as part of the fivethirtyeight package. To get the data we install the fivethirtyeight package and upload the data.
 library(fivethirtyeight)data(drinks)We visualize countries arranged by number of servings. We have three main categories of drinks: beer, wine and spirits. Let’s visualize them one by one:</description>
     </item>

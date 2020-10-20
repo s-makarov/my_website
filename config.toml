@@ -95,13 +95,13 @@ disqusShortname = ""
       title = "My First Steps with ggplot2"
       subtitle = "Alcohol Consumption"
       image = "Alcohol.jpg"
-      url = "projects/homework1"
+      url = "projects/alcohol_consumption"
 
     [[params.tiles.showcase]]
       title = "Covid Statistics"
       subtitle = "by comorbidities and ICU admission"
       image = "covid.jpg"
-      url = "projects/homework2"
+      url = "projects/covid_statistics"
 
     [[params.tiles.showcase]]
       title = "Inverted Yield Curve"
@@ -139,7 +139,7 @@ disqusShortname = ""
   [params.two]
     enable = true
     title = "About Me"
-    subtitle = "I am a current Masters in Financial Analysis student at London Business School. Before coming to the London Business School I graduated from a dual degree programme of Higher School of Economics and University of London in Economics major. During the undergraduate I gradually developed interest in the Corporate Finance sphere and now I am looking for opportunities to start my career as an Investment Banking Analyst in London. Still I am willing to explore broader spectrum of fields of knowledge and one of the most recent is Data Analytics."
+    subtitle = "I am a current Masters in Financial Analysis student at London Business School. Before coming to the London Business School I graduated from a dual degree programme of Higher School of Economics and University of London in Economics major. During the undergraduate I gradually developed interest in the Corporate Finance and now I am looking for opportunities to start my career as an Investment Banking Analyst in London. Still I am willing to explore broader spectrum of fields of knowledge."
     buttonText = "1-page CV"
     url = "post/CV_Stanislav_Makarov.pdf"
 

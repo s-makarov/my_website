@@ -21,9 +21,9 @@ options(digits = 3)
 
 # default figure size
 knitr::opts_chunk$set(
-  fig.width=10, 
-  fig.height=10,
-  dpi = 125, 
+  fig.width=8, 
+  fig.height=8,
+  dpi = 100, 
   fig.align = "center"
 )
 ```

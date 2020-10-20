@@ -13,7 +13,8 @@
       <pubDate>Tue, 20 Oct 2020 00:00:00 +0000</pubDate>
       
       <guid>/projects/hong_kong/</guid>
-      <description>## Rows: 11,187## Columns: 106## Delimiter: &amp;quot;,&amp;quot;## chr [46]: listing_url, name, summary, space, description, experiences_offered, neighborho...## dbl [38]: id, scrape_id, host_id, host_listings_count, host_total_listings_count, latitud...## lgl [17]: thumbnail_url, medium_url, xl_picture_url, host_is_superhost, host_has_profile_...## date [ 5]: last_scraped, host_since, calendar_last_scraped, first_review, last_review## ## Use `spec()` to retrieve the guessed column specification## Pass a specification to the `col_types` argument to quiet this messageExploratory Data Analysis (EDA)At first glance, there are 11187 observations of 106 variables in the data set.</description>
+      <description>Exploratory Data Analysis (EDA)At first glance, there are 11187 observations of 106 variables in the data set. To improve efficiency, we carefully went through the list and selected 28 variables that we believe are most relevant to the following analysis.
+glimpse(hk_listings)## Rows: 11,187## Columns: 106## $ id &amp;lt;dbl&amp;gt; 69074, 75083, 103760, ...## $ listing_url &amp;lt;chr&amp;gt; &amp;quot;https://www.</description>
     </item>
     
     <item>

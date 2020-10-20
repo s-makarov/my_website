@@ -8,7 +8,7 @@ draft: false
 image: pic01.jpg
 keywords: ""
 slug: Hong_Kong
-title: Hong Kong Airbnb
+title: Hong Kong Airbnb analysis
 ---
 
 ```{r setup, include=FALSE}

@@ -104,16 +104,16 @@ disqusShortname = ""
       url = "projects/homework2"
 
     [[params.tiles.showcase]]
+      title = "My Experience"
+      subtitle = "1-page CV"
+      image = "yield.jpg"
+      url = "projects/yield_inversion"
+
+    [[params.tiles.showcase]]
       title = "Hong Kong Airbnb Analysis"
       subtitle = "In search for best linear model"
       image = "HK.jpg"
       url = "projects/Hong_Kong"
-
-    [[params.tiles.showcase]]
-      title = "My Experience"
-      subtitle = "1-page CV"
-      image = "pic04.jpg"
-      url = "post/CV_Stanislav_Makarov.pdf"
 
     #[[params.tiles.showcase]]
     #  title = "Consequat"
@@ -137,11 +137,14 @@ disqusShortname = ""
 
   # Section Type Two
   [params.two]
-    enable = false
-    title = "Turned Off"
-    subtitle = ""
-    buttonText = "Get Started"
-    url = "blogs"
+    enable = true
+    title = "About Me"
+    subtitle = "I am a current Masters in Financial Analysis student at London Business School.
+    "Before coming to the London Business School I graduated from a dual degree programme of Higher School of Economics and University of London in Economics major
+    "During the undergraduate I gradually developed interest in the Corporate Finance sphere and now I am looking for opportunities to start my career as an Investment Banker in London.
+    "Still I am willing to explore broader spectrum of subject and one of the spheres I am interested in is Data Analytics.""
+    buttonText = "1-page CV"
+    url = "post/CV_Stanislav_Makarov.pdf"
 
 
   # Contact section

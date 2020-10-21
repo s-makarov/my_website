@@ -5,7 +5,7 @@ categories:
 date: "2020-09-27"
 description: My first steps with R and ggplot2 library. I use the dataset provided by fivethiryeight on the alcohol consumption in different countries to train the basic plotting skills.
 draft: false
-image: Alcohol.jpg
+image: Alcohol.jpg?nf_resize=smartcrop&w=400&h=300
 keywords: ""
 slug: alcohol_consumption
 title: My First Steps with ggplot2

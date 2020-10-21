@@ -3,7 +3,7 @@ categories:
 - ""
 - ""
 date: "2020-10-04"
-description: Here I present a quick graphic analysis of COVID-19 statistics with respect to comorbidities and ICU admissions. It utilizes a little more advanced dataset and ggplot functions than the ones presented in "My First Steps with ggplot"
+description: Here I present a quick graphic analysis of COVID-19 statistics with respect to comorbidities and ICU admissions. It utilizes a little more advanced dataset and ggplot functions than the ones presented in "My First Steps with ggplot2"
 draft: false
 image: covid.jpg
 keywords: ""

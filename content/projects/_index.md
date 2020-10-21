@@ -6,4 +6,4 @@ slug: projects
 title: Projects
 ---
 
-My projects within the Data Analytics field
+My study projects within the Data Analytics field
